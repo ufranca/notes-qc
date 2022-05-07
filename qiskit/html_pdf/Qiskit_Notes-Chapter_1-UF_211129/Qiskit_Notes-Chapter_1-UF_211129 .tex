@@ -1,0 +1,2629 @@
+\documentclass[11pt]{article}
+
+    \usepackage[breakable]{tcolorbox}
+    \usepackage{parskip} % Stop auto-indenting (to mimic markdown behaviour)
+    
+    \usepackage{iftex}
+    \ifPDFTeX
+    	\usepackage[T1]{fontenc}
+    	\usepackage{mathpazo}
+    \else
+    	\usepackage{fontspec}
+    \fi
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % Maintain compatibility with old templates. Remove in nbconvert 6.0
+    \let\Oldincludegraphics\includegraphics
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionFormat{nocaption}{}
+    \captionsetup{format=nocaption,aboveskip=0pt,belowskip=0pt}
+
+    \usepackage{float}
+    \floatplacement{figure}{H} % forces figures to be placed at the correct location
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+    \usepackage[mathletters]{ucs} % Extended unicode (utf-8) support
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics 
+                         % to support a larger range
+    \makeatletter % fix for old versions of grffile with XeLaTeX
+    \@ifpackagelater{grffile}{2019/11/01}
+    {
+      % Do nothing on new versions
+    }
+    {
+      \def\Gread@@xetex#1{%
+        \IfFileExists{"\Gin@base".bb}%
+        {\Gread@eps{\Gin@base.bb}}%
+        {\Gread@@xetex@aux#1}%
+      }
+    }
+    \makeatother
+    \usepackage[Export]{adjustbox} % Used to constrain images to a maximum size
+    \adjustboxset{max size={0.9\linewidth}{0.9\paperheight}}
+
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    % The default LaTeX title has an obnoxious amount of whitespace. By default,
+    % titling removes some of it. It also provides customization options.
+    \usepackage{titling}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    \usepackage{mathrsfs}
+    
+
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+    \definecolor{ansi-default-inverse-fg}{HTML}{FFFFFF}
+    \definecolor{ansi-default-inverse-bg}{HTML}{000000}
+
+    % common color for the border for error outputs.
+    \definecolor{outerrorbackground}{HTML}{FFDFDF}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+    
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    
+    
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatibility definitions
+    \def\gt{>}
+    \def\lt{<}
+    \let\Oldtex\TeX
+    \let\Oldlatex\LaTeX
+    \renewcommand{\TeX}{\textrm{\Oldtex}}
+    \renewcommand{\LaTeX}{\textrm{\Oldlatex}}
+    % Document parameters
+    % Document title
+    \title{Qiskit\_Notes-Chapter\_1-UF\_211129 }
+    
+    
+    
+    
+    
+% Pygments definitions
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\@namedef{PY@tok@w}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\@namedef{PY@tok@c}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@cp}{\def\PY@tc##1{\textcolor[rgb]{0.74,0.48,0.00}{##1}}}
+\@namedef{PY@tok@k}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kt}{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\@namedef{PY@tok@o}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ow}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@nb}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nf}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@ne}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.82,0.25,0.23}{##1}}}
+\@namedef{PY@tok@nv}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@no}{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\@namedef{PY@tok@nl}{\def\PY@tc##1{\textcolor[rgb]{0.63,0.63,0.00}{##1}}}
+\@namedef{PY@tok@ni}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.60,0.60,0.60}{##1}}}
+\@namedef{PY@tok@na}{\def\PY@tc##1{\textcolor[rgb]{0.49,0.56,0.16}{##1}}}
+\@namedef{PY@tok@nt}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nd}{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@s}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sd}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@si}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\@namedef{PY@tok@se}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.13}{##1}}}
+\@namedef{PY@tok@sr}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\@namedef{PY@tok@ss}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sx}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@m}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@gh}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gu}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gd}{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\@namedef{PY@tok@gi}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.63,0.00}{##1}}}
+\@namedef{PY@tok@gr}{\def\PY@tc##1{\textcolor[rgb]{1.00,0.00,0.00}{##1}}}
+\@namedef{PY@tok@ge}{\let\PY@it=\textit}
+\@namedef{PY@tok@gs}{\let\PY@bf=\textbf}
+\@namedef{PY@tok@gp}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@go}{\def\PY@tc##1{\textcolor[rgb]{0.53,0.53,0.53}{##1}}}
+\@namedef{PY@tok@gt}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\@namedef{PY@tok@err}{\def\PY@bc##1{{\setlength{\fboxsep}{\string -\fboxrule}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}}
+\@namedef{PY@tok@kc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kd}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kr}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@bp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@fm}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@vc}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vg}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vi}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vm}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sa}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sb}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sc}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@dl}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s2}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sh}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s1}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@mb}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mf}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mh}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mi}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@il}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mo}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ch}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@cm}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@cpf}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@c1}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@cs}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % For linebreaks inside Verbatim environment from package fancyvrb. 
+    \makeatletter
+        \newbox\Wrappedcontinuationbox 
+        \newbox\Wrappedvisiblespacebox 
+        \newcommand*\Wrappedvisiblespace {\textcolor{red}{\textvisiblespace}} 
+        \newcommand*\Wrappedcontinuationsymbol {\textcolor{red}{\llap{\tiny$\m@th\hookrightarrow$}}} 
+        \newcommand*\Wrappedcontinuationindent {3ex } 
+        \newcommand*\Wrappedafterbreak {\kern\Wrappedcontinuationindent\copy\Wrappedcontinuationbox} 
+        % Take advantage of the already applied Pygments mark-up to insert 
+        % potential linebreaks for TeX processing. 
+        %        {, <, #, %, $, ' and ": go to next line. 
+        %        _, }, ^, &, >, - and ~: stay at end of broken line. 
+        % Use of \textquotesingle for straight quote. 
+        \newcommand*\Wrappedbreaksatspecials {% 
+            \def\PYGZus{\discretionary{\char`\_}{\Wrappedafterbreak}{\char`\_}}% 
+            \def\PYGZob{\discretionary{}{\Wrappedafterbreak\char`\{}{\char`\{}}% 
+            \def\PYGZcb{\discretionary{\char`\}}{\Wrappedafterbreak}{\char`\}}}% 
+            \def\PYGZca{\discretionary{\char`\^}{\Wrappedafterbreak}{\char`\^}}% 
+            \def\PYGZam{\discretionary{\char`\&}{\Wrappedafterbreak}{\char`\&}}% 
+            \def\PYGZlt{\discretionary{}{\Wrappedafterbreak\char`\<}{\char`\<}}% 
+            \def\PYGZgt{\discretionary{\char`\>}{\Wrappedafterbreak}{\char`\>}}% 
+            \def\PYGZsh{\discretionary{}{\Wrappedafterbreak\char`\#}{\char`\#}}% 
+            \def\PYGZpc{\discretionary{}{\Wrappedafterbreak\char`\%}{\char`\%}}% 
+            \def\PYGZdl{\discretionary{}{\Wrappedafterbreak\char`\$}{\char`\$}}% 
+            \def\PYGZhy{\discretionary{\char`\-}{\Wrappedafterbreak}{\char`\-}}% 
+            \def\PYGZsq{\discretionary{}{\Wrappedafterbreak\textquotesingle}{\textquotesingle}}% 
+            \def\PYGZdq{\discretionary{}{\Wrappedafterbreak\char`\"}{\char`\"}}% 
+            \def\PYGZti{\discretionary{\char`\~}{\Wrappedafterbreak}{\char`\~}}% 
+        } 
+        % Some characters . , ; ? ! / are not pygmentized. 
+        % This macro makes them "active" and they will insert potential linebreaks 
+        \newcommand*\Wrappedbreaksatpunct {% 
+            \lccode`\~`\.\lowercase{\def~}{\discretionary{\hbox{\char`\.}}{\Wrappedafterbreak}{\hbox{\char`\.}}}% 
+            \lccode`\~`\,\lowercase{\def~}{\discretionary{\hbox{\char`\,}}{\Wrappedafterbreak}{\hbox{\char`\,}}}% 
+            \lccode`\~`\;\lowercase{\def~}{\discretionary{\hbox{\char`\;}}{\Wrappedafterbreak}{\hbox{\char`\;}}}% 
+            \lccode`\~`\:\lowercase{\def~}{\discretionary{\hbox{\char`\:}}{\Wrappedafterbreak}{\hbox{\char`\:}}}% 
+            \lccode`\~`\?\lowercase{\def~}{\discretionary{\hbox{\char`\?}}{\Wrappedafterbreak}{\hbox{\char`\?}}}% 
+            \lccode`\~`\!\lowercase{\def~}{\discretionary{\hbox{\char`\!}}{\Wrappedafterbreak}{\hbox{\char`\!}}}% 
+            \lccode`\~`\/\lowercase{\def~}{\discretionary{\hbox{\char`\/}}{\Wrappedafterbreak}{\hbox{\char`\/}}}% 
+            \catcode`\.\active
+            \catcode`\,\active 
+            \catcode`\;\active
+            \catcode`\:\active
+            \catcode`\?\active
+            \catcode`\!\active
+            \catcode`\/\active 
+            \lccode`\~`\~ 	
+        }
+    \makeatother
+
+    \let\OriginalVerbatim=\Verbatim
+    \makeatletter
+    \renewcommand{\Verbatim}[1][1]{%
+        %\parskip\z@skip
+        \sbox\Wrappedcontinuationbox {\Wrappedcontinuationsymbol}%
+        \sbox\Wrappedvisiblespacebox {\FV@SetupFont\Wrappedvisiblespace}%
+        \def\FancyVerbFormatLine ##1{\hsize\linewidth
+            \vtop{\raggedright\hyphenpenalty\z@\exhyphenpenalty\z@
+                \doublehyphendemerits\z@\finalhyphendemerits\z@
+                \strut ##1\strut}%
+        }%
+        % If the linebreak is at a space, the latter will be displayed as visible
+        % space at end of first line, and a continuation symbol starts next line.
+        % Stretch/shrink are however usually zero for typewriter font.
+        \def\FV@Space {%
+            \nobreak\hskip\z@ plus\fontdimen3\font minus\fontdimen4\font
+            \discretionary{\copy\Wrappedvisiblespacebox}{\Wrappedafterbreak}
+            {\kern\fontdimen2\font}%
+        }%
+        
+        % Allow breaks at special characters using \PYG... macros.
+        \Wrappedbreaksatspecials
+        % Breaks at punctuation characters . , ; ? ! and / need catcode=\active 	
+        \OriginalVerbatim[#1,codes*=\Wrappedbreaksatpunct]%
+    }
+    \makeatother
+
+    % Exact colors from NB
+    \definecolor{incolor}{HTML}{303F9F}
+    \definecolor{outcolor}{HTML}{D84315}
+    \definecolor{cellborder}{HTML}{CFCFCF}
+    \definecolor{cellbackground}{HTML}{F7F7F7}
+    
+    % prompt
+    \makeatletter
+    \newcommand{\boxspacing}{\kern\kvtcb@left@rule\kern\kvtcb@boxsep}
+    \makeatother
+    \newcommand{\prompt}[4]{
+        {\ttfamily\llap{{\color{#2}[#3]:\hspace{3pt}#4}}\vspace{-\baselineskip}}
+    }
+    
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy 
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+\begin{document}
+    
+    \maketitle
+    
+    
+
+    
+    Notes Qiskit UF
+
+    \hypertarget{quantum-states-and-qubits}{%
+\section{Quantum States and Qubits}\label{quantum-states-and-qubits}}
+
+    \hypertarget{introduction}{%
+\subsection{Introduction}\label{introduction}}
+
+    \hypertarget{the-atoms-of-computation}{%
+\subsection{The Atoms of Computation}\label{the-atoms-of-computation}}
+
+    Understanding first classical computation and bits, using the same tools
+we will use later for quantum.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{1}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{from} \PY{n+nn}{qiskit} \PY{k+kn}{import} \PY{n}{QuantumCircuit}\PY{p}{,} \PY{n}{assemble}\PY{p}{,} \PY{n}{Aer}
+\PY{k+kn}{from} \PY{n+nn}{qiskit}\PY{n+nn}{.}\PY{n+nn}{visualization} \PY{k+kn}{import} \PY{n}{plot\PYZus{}histogram}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{2}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{from} \PY{n+nn}{qiskit\PYZus{}textbook}\PY{n+nn}{.}\PY{n+nn}{widgets} \PY{k+kn}{import} \PY{n}{binary\PYZus{}widget}
+\PY{n}{binary\PYZus{}widget}\PY{p}{(}\PY{n}{nbits}\PY{o}{=}\PY{l+m+mi}{5}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+VBox(children=(Label(value='Toggle the bits below to change the binary number.'), Label(value='Think of a numb…
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+HTML(value='<pre>Binary   Decimal\textbackslash{}n 00000 = 0</pre>')
+    \end{Verbatim}
+
+    
+    First quantum circuit
+
+    3 jobs:
+
+\begin{itemize}
+\tightlist
+\item
+  enconde the input
+\item
+  actual computation
+\item
+  extract output
+\end{itemize}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{3}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} define QC}
+\PY{n}{qc\PYZus{}output} \PY{o}{=} \PY{n}{QuantumCircuit}\PY{p}{(}\PY{l+m+mi}{8}\PY{p}{)} \PY{c+c1}{\PYZsh{} takes n of bits as argument}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{4}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} add measurement}
+\PY{n}{qc\PYZus{}output}\PY{o}{.}\PY{n}{measure\PYZus{}all}\PY{p}{(}\PY{p}{)} \PY{c+c1}{\PYZsh{} extraction of outputs}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{5}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{qc\PYZus{}output}\PY{o}{.}\PY{n}{draw}\PY{p}{(}\PY{n}{initial\PYZus{}state}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+ 
+            
+\prompt{Out}{outcolor}{5}{}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_11_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    Notice the qubits are \textbf{always} initialized at \(|0\rangle\).
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{6}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} simulating the circuit multiple times}
+\PY{n}{sim} \PY{o}{=} \PY{n}{Aer}\PY{o}{.}\PY{n}{get\PYZus{}backend}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{aer\PYZus{}simulator}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{result} \PY{o}{=} \PY{n}{sim}\PY{o}{.}\PY{n}{run}\PY{p}{(}\PY{n}{qc\PYZus{}output}\PY{p}{)}\PY{o}{.}\PY{n}{result}\PY{p}{(}\PY{p}{)}
+\PY{n}{count} \PY{o}{=} \PY{n}{result}\PY{o}{.}\PY{n}{get\PYZus{}counts}\PY{p}{(}\PY{p}{)}
+\PY{n}{plot\PYZus{}histogram}\PY{p}{(}\PY{n}{count}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+ 
+            
+\prompt{Out}{outcolor}{6}{}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_13_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    We run many times because quantum computers may have some randomness
+when measuring.
+
+Notice this is a \textbf{simulation}, which can be done only to a small
+number of qubits \(\approx 30\). To run in a real device, just need to
+replace
+\texttt{Aer.get\_backend(\textquotesingle{}aer\_simulator\textquotesingle{})}
+with the backend of the device.
+
+    \hypertarget{example-creating-an-adder-circuit-item-4-on-textbook}{%
+\subsubsection{Example: creating an Adder circuit (item 4 on
+textbook)}\label{example-creating-an-adder-circuit-item-4-on-textbook}}
+
+    Remember, we need to:
+
+\begin{itemize}
+\tightlist
+\item
+  enconde the input
+\item
+  actual computation
+\item
+  extract output
+\end{itemize}
+
+    \hypertarget{enconding-the-input}{%
+\paragraph{Enconding the input}\label{enconding-the-input}}
+
+NOT gate first: flips the qubit -\textgreater{} x
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{7}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{qc\PYZus{}encode} \PY{o}{=} \PY{n}{QuantumCircuit}\PY{p}{(}\PY{l+m+mi}{8}\PY{p}{)}
+\PY{n}{qc\PYZus{}encode}\PY{o}{.}\PY{n}{x}\PY{p}{(}\PY{l+m+mi}{7}\PY{p}{)} \PY{c+c1}{\PYZsh{}(the very last qubit)}
+\PY{n}{qc\PYZus{}encode}\PY{o}{.}\PY{n}{draw}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+ 
+            
+\prompt{Out}{outcolor}{7}{}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_18_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{8}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{qc\PYZus{}encode}\PY{o}{.}\PY{n}{measure\PYZus{}all}\PY{p}{(}\PY{p}{)}
+\PY{n}{qc\PYZus{}encode}\PY{o}{.}\PY{n}{draw}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+ 
+            
+\prompt{Out}{outcolor}{8}{}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_19_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    And similarly to before, we can simulate it:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{9}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{sim} \PY{o}{=} \PY{n}{Aer}\PY{o}{.}\PY{n}{get\PYZus{}backend}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{aer\PYZus{}simulator}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{result} \PY{o}{=} \PY{n}{sim}\PY{o}{.}\PY{n}{run}\PY{p}{(}\PY{n}{qc\PYZus{}encode}\PY{p}{)}\PY{o}{.}\PY{n}{result}\PY{p}{(}\PY{p}{)}
+\PY{n}{counts} \PY{o}{=} \PY{n}{result}\PY{o}{.}\PY{n}{get\PYZus{}counts}\PY{p}{(}\PY{p}{)}
+\PY{n}{plot\PYZus{}histogram}\PY{p}{(}\PY{n}{counts}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+ 
+            
+\prompt{Out}{outcolor}{9}{}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_21_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    \textbf{Notice it reads from right to left}, to be similar to the
+representation of numbers in the decimal system
+
+\[
+1 \times 2^7 + 0 \times 2^6 + 0 \times 2^5 + 0 \times 2^4 + 0 \times 2^3 + 0 \times 2^2+ 0 \times 2^1 + 0 \times 2^0
+=10000000
+\]
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{10}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{qc\PYZus{}encode} \PY{o}{=} \PY{n}{QuantumCircuit}\PY{p}{(}\PY{l+m+mi}{8}\PY{p}{)}
+\PY{n}{qc\PYZus{}encode}\PY{o}{.}\PY{n}{x}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{)}
+\PY{n}{qc\PYZus{}encode}\PY{o}{.}\PY{n}{x}\PY{p}{(}\PY{l+m+mi}{5}\PY{p}{)}
+
+\PY{n}{qc\PYZus{}encode}\PY{o}{.}\PY{n}{draw}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+ 
+            
+\prompt{Out}{outcolor}{10}{}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_23_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    Remember the usual addition, carry one algorithm.
+
+    \begin{eqnarray}
+&  10 \\
++&  01 \\
+=&  11
+\end{eqnarray}
+
+    The sums in decimal then becomes,
+
+\begin{eqnarray}
+0+0 &= 00 \\
+0+1 &= 01 \\
+1+0 &= 01 \\
+1+1 &= 10 
+\end{eqnarray}
+
+which is called a \textbf{half adder}.
+
+    
+
+    The two qubits to add are encoded in \(0\) and \(1\). In the above
+circuit, we are looking for the solution of \(1+1\). The results will be
+stored on the qubits 2 and 3 and will store in classical bits 0 and 1,
+respectively.
+
+\emph{Dashed lines are made with the} \texttt{barrier} \emph{command}.
+
+    Remember
+
+\begin{eqnarray}
+0+0 &= 00 \\
+0+1 &= 01 \\
+1+0 &= 01 \\
+1+1 &= 10 
+\end{eqnarray}
+
+Notice this seems like \textbf{XOR gate}:
+
+\begin{eqnarray}
+0+0 &= 0 \\
+0+1 &= 1 \\
+1+0 &= 1 \\
+1+1 &= 0 
+\end{eqnarray}
+
+which in quantum computers is done by the \textbf{CNOT gate},
+\texttt{cx}.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{11}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{qc\PYZus{}cnot} \PY{o}{=} \PY{n}{QuantumCircuit}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{)}
+\PY{n}{qc\PYZus{}cnot}\PY{o}{.}\PY{n}{cx}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{)} \PY{c+c1}{\PYZsh{}\PYZsh{} first is the control, second is the target}
+\PY{n}{qc\PYZus{}cnot}\PY{o}{.}\PY{n}{draw}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+ 
+            
+\prompt{Out}{outcolor}{11}{}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_30_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    It compares both inputs to see if they are different, and overwrites the
+target bit with the answer. Or, said in another manner, it flips the
+target if the control is \(1\).
+
+Trying it:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{12}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{qc} \PY{o}{=} \PY{n}{QuantumCircuit}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{)} \PY{c+c1}{\PYZsh{} Two quantum, two classical regimes}
+\PY{n}{qc}\PY{o}{.}\PY{n}{draw}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+ 
+            
+\prompt{Out}{outcolor}{12}{}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_32_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{13}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{qc}\PY{o}{.}\PY{n}{x}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{qc}\PY{o}{.}\PY{n}{draw}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+ 
+            
+\prompt{Out}{outcolor}{13}{}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_33_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{14}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{qc}\PY{o}{.}\PY{n}{cx}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{)}
+\PY{n}{qc}\PY{o}{.}\PY{n}{draw}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+ 
+            
+\prompt{Out}{outcolor}{14}{}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_34_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{15}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{qc}\PY{o}{.}\PY{n}{measure}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{qc}\PY{o}{.}\PY{n}{measure}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{)}
+\PY{n}{qc}\PY{o}{.}\PY{n}{draw}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+ 
+            
+\prompt{Out}{outcolor}{15}{}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_35_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    The result should be \(11\)
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{16}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{sim} \PY{o}{=} \PY{n}{Aer}\PY{o}{.}\PY{n}{get\PYZus{}backend}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{aer\PYZus{}simulator}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{result} \PY{o}{=} \PY{n}{sim}\PY{o}{.}\PY{n}{run}\PY{p}{(}\PY{n}{qc}\PY{p}{)}\PY{o}{.}\PY{n}{result}\PY{p}{(}\PY{p}{)}
+\PY{n}{counts} \PY{o}{=} \PY{n}{result}\PY{o}{.}\PY{n}{get\PYZus{}counts}\PY{p}{(}\PY{p}{)}
+\PY{n}{plot\PYZus{}histogram}\PY{p}{(}\PY{n}{counts}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+ 
+            
+\prompt{Out}{outcolor}{16}{}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_37_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    Or, all in one single cell:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{17}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{qc} \PY{o}{=} \PY{n}{QuantumCircuit}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{)}
+\PY{n}{qc}\PY{o}{.}\PY{n}{x}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{qc}\PY{o}{.}\PY{n}{cx}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{)}
+\PY{n}{qc}\PY{o}{.}\PY{n}{measure}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{qc}\PY{o}{.}\PY{n}{measure}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{)}
+\PY{n}{qc}\PY{o}{.}\PY{n}{draw}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+ 
+            
+\prompt{Out}{outcolor}{17}{}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_39_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    For our half adder, we don't want to overwrite one of our inputs.
+
+Instead, \emph{we want to write the result on a different pair of
+qubits}. For this, we can use two CNOTs.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{18}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{qc\PYZus{}ha} \PY{o}{=} \PY{n}{QuantumCircuit}\PY{p}{(}\PY{l+m+mi}{4}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} encode inputs in qubits 0 and 1}
+\PY{n}{qc\PYZus{}ha}\PY{o}{.}\PY{n}{x}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{)} \PY{c+c1}{\PYZsh{} For a=0, remove this line. For a=1, leave it.}
+\PY{n}{qc\PYZus{}ha}\PY{o}{.}\PY{n}{x}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{)} \PY{c+c1}{\PYZsh{} For b=0, remove this line. For b=1, l}
+\PY{n}{qc\PYZus{}ha}\PY{o}{.}\PY{n}{draw}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+ 
+            
+\prompt{Out}{outcolor}{18}{}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_41_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{19}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{qc\PYZus{}ha}\PY{o}{.}\PY{n}{barrier}\PY{p}{(}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} use cnots to write the XOR of the inputs on qubit 2}
+\PY{n}{qc\PYZus{}ha}\PY{o}{.}\PY{n}{cx}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{)}
+\PY{n}{qc\PYZus{}ha}\PY{o}{.}\PY{n}{cx}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{)}
+\PY{n}{qc\PYZus{}ha}\PY{o}{.}\PY{n}{barrier}\PY{p}{(}\PY{p}{)}
+\PY{n}{qc\PYZus{}ha}\PY{o}{.}\PY{n}{draw}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+ 
+            
+\prompt{Out}{outcolor}{19}{}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_42_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{20}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} extract outputs}
+\PY{n}{qc\PYZus{}ha}\PY{o}{.}\PY{n}{measure}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{)} \PY{c+c1}{\PYZsh{} extract XOR value}
+\PY{n}{qc\PYZus{}ha}\PY{o}{.}\PY{n}{measure}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{)}
+
+\PY{n}{qc\PYZus{}ha}\PY{o}{.}\PY{n}{draw}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+ 
+            
+\prompt{Out}{outcolor}{20}{}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_43_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    All in one cell:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{21}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{qc\PYZus{}ha} \PY{o}{=} \PY{n}{QuantumCircuit}\PY{p}{(}\PY{l+m+mi}{4}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} encode inputs in qubits 0 and 1}
+\PY{n}{qc\PYZus{}ha}\PY{o}{.}\PY{n}{x}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{)} \PY{c+c1}{\PYZsh{} For a=0, remove this line. For a=1, leave it.}
+\PY{n}{qc\PYZus{}ha}\PY{o}{.}\PY{n}{x}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{)} \PY{c+c1}{\PYZsh{} For b=0, remove this line. For b=1, leave it.}
+\PY{n}{qc\PYZus{}ha}\PY{o}{.}\PY{n}{barrier}\PY{p}{(}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} use cnots to write the XOR of the inputs on qubit 2}
+\PY{n}{qc\PYZus{}ha}\PY{o}{.}\PY{n}{cx}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{)}
+\PY{n}{qc\PYZus{}ha}\PY{o}{.}\PY{n}{cx}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{)}
+\PY{n}{qc\PYZus{}ha}\PY{o}{.}\PY{n}{barrier}\PY{p}{(}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} extract outputs}
+\PY{n}{qc\PYZus{}ha}\PY{o}{.}\PY{n}{measure}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{)} \PY{c+c1}{\PYZsh{} extract XOR value}
+\PY{n}{qc\PYZus{}ha}\PY{o}{.}\PY{n}{measure}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{)}
+
+\PY{n}{qc\PYZus{}ha}\PY{o}{.}\PY{n}{draw}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+ 
+            
+\prompt{Out}{outcolor}{21}{}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_45_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    So, \(q_2\) has the result of the first bit.
+
+For the second qubit, recorded in \(q3\), it will only be \(1\) when
+\(1+1 = 10\). Therefore, we can check when both inputs are \(1\). If
+both are, we need a \textbf{NOT} gate on \(q3\), controlled on both
+\(q1\) and \(q2\): \textbf{Toffoli gate} (basically an AND gate);
+\texttt{ccx}.
+
+Repeating the circuit above:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{22}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{qc\PYZus{}ha} \PY{o}{=} \PY{n}{QuantumCircuit}\PY{p}{(}\PY{l+m+mi}{4}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} encode inputs in qubits 0 and 1}
+\PY{n}{qc\PYZus{}ha}\PY{o}{.}\PY{n}{x}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{)} \PY{c+c1}{\PYZsh{} For a=0, remove the this line. For a=1, leave it.}
+\PY{n}{qc\PYZus{}ha}\PY{o}{.}\PY{n}{x}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{)} \PY{c+c1}{\PYZsh{} For b=0, remove the this line. For b=1, leave it.}
+\PY{n}{qc\PYZus{}ha}\PY{o}{.}\PY{n}{barrier}\PY{p}{(}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} use cnots to write the XOR of the inputs on qubit 2}
+\PY{n}{qc\PYZus{}ha}\PY{o}{.}\PY{n}{cx}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{)}
+\PY{n}{qc\PYZus{}ha}\PY{o}{.}\PY{n}{cx}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{)}
+\PY{n}{qc\PYZus{}ha}\PY{o}{.}\PY{n}{draw}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+ 
+            
+\prompt{Out}{outcolor}{22}{}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_47_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{23}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} use ccx to write the AND of the inputs on qubit 3}
+\PY{n}{qc\PYZus{}ha}\PY{o}{.}\PY{n}{ccx}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{)}
+\PY{n}{qc\PYZus{}ha}\PY{o}{.}\PY{n}{barrier}\PY{p}{(}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} extract outputs}
+\PY{n}{qc\PYZus{}ha}\PY{o}{.}\PY{n}{measure}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{)} \PY{c+c1}{\PYZsh{} extract XOR value}
+\PY{n}{qc\PYZus{}ha}\PY{o}{.}\PY{n}{measure}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{)} \PY{c+c1}{\PYZsh{} extract AND value}
+
+\PY{n}{qc\PYZus{}ha}\PY{o}{.}\PY{n}{draw}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+ 
+            
+\prompt{Out}{outcolor}{23}{}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_48_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    Now let's calculate the outcomes of this circuit. Notice that so far we
+have only created the circuit. Now let's calculate it:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{24}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}\PYZsh{}\PYZsh{}\PYZsh{} Notice that assemble \PYZhy{}\PYZgt{} qobj is not needed anymore, }
+\PY{c+c1}{\PYZsh{}\PYZsh{}\PYZsh{}\PYZsh{} can run the circuit directly}
+\PY{c+c1}{\PYZsh{}qobj = assemble(qc\PYZus{}ha)}
+\PY{c+c1}{\PYZsh{}counts = sim.run(qobj).result().get\PYZus{}counts()}
+
+\PY{n}{counts} \PY{o}{=} \PY{n}{sim}\PY{o}{.}\PY{n}{run}\PY{p}{(}\PY{n}{qc\PYZus{}ha}\PY{p}{)}\PY{o}{.}\PY{n}{result}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{get\PYZus{}counts}\PY{p}{(}\PY{p}{)}
+\PY{n}{plot\PYZus{}histogram}\PY{p}{(}\PY{n}{counts}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+ 
+            
+\prompt{Out}{outcolor}{24}{}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_50_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{25}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}\PYZsh{} trying all possibilities:}
+\PY{k}{for} \PY{n}{q0}\PY{p}{,} \PY{n}{q1} \PY{o+ow}{in} \PY{p}{[}\PY{p}{(}\PY{n}{q0}\PY{p}{,}\PY{n}{q1}\PY{p}{)} \PY{k}{for} \PY{n}{q0} \PY{o+ow}{in} \PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{]} \PY{k}{for} \PY{n}{q1} \PY{o+ow}{in} \PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{]}\PY{p}{:}
+    \PY{n+nb}{print}\PY{p}{(}\PY{n}{q0}\PY{p}{,}\PY{n}{q1}\PY{p}{)}
+    \PY{n}{qc\PYZus{}ha} \PY{o}{=} \PY{n}{QuantumCircuit}\PY{p}{(}\PY{l+m+mi}{4}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{)}
+    \PY{c+c1}{\PYZsh{} encode inputs in qubits 0 and 1}
+    \PY{k}{if} \PY{n}{q0} \PY{o}{==} \PY{l+m+mi}{1}\PY{p}{:}
+        \PY{n}{qc\PYZus{}ha}\PY{o}{.}\PY{n}{x}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{)} \PY{c+c1}{\PYZsh{} For a=0, remove the this line. For a=1, leave it.}
+    \PY{k}{if} \PY{n}{q1} \PY{o}{==} \PY{l+m+mi}{1}\PY{p}{:}
+        \PY{n}{qc\PYZus{}ha}\PY{o}{.}\PY{n}{x}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{)} \PY{c+c1}{\PYZsh{} For b=0, remove the this line. For b=1, leave it.}
+    \PY{n}{qc\PYZus{}ha}\PY{o}{.}\PY{n}{barrier}\PY{p}{(}\PY{p}{)}
+    \PY{c+c1}{\PYZsh{} use cnots to write the XOR of the inputs on qubit 2}
+    \PY{n}{qc\PYZus{}ha}\PY{o}{.}\PY{n}{cx}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{)}
+    \PY{n}{qc\PYZus{}ha}\PY{o}{.}\PY{n}{cx}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{)}
+    \PY{c+c1}{\PYZsh{} use ccx to write the AND of the inputs on qubit 3}
+    \PY{n}{qc\PYZus{}ha}\PY{o}{.}\PY{n}{ccx}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{)}
+    \PY{n}{qc\PYZus{}ha}\PY{o}{.}\PY{n}{barrier}\PY{p}{(}\PY{p}{)}
+    \PY{c+c1}{\PYZsh{} extract outputs}
+    \PY{n}{qc\PYZus{}ha}\PY{o}{.}\PY{n}{measure}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{)} \PY{c+c1}{\PYZsh{} extract XOR value}
+    \PY{n}{qc\PYZus{}ha}\PY{o}{.}\PY{n}{measure}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{)} \PY{c+c1}{\PYZsh{} extract AND value}
+
+    \PY{n}{qc\PYZus{}ha}\PY{o}{.}\PY{n}{draw}\PY{p}{(}\PY{p}{)}
+    
+    \PY{n}{counts} \PY{o}{=} \PY{n}{sim}\PY{o}{.}\PY{n}{run}\PY{p}{(}\PY{n}{qc\PYZus{}ha}\PY{p}{)}\PY{o}{.}\PY{n}{result}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{get\PYZus{}counts}\PY{p}{(}\PY{p}{)}
+    \PY{n}{display}\PY{p}{(}\PY{n}{plot\PYZus{}histogram}\PY{p}{(}\PY{n}{counts}\PY{p}{,} \PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{4}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+0 0
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_51_1.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+0 1
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_51_3.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+1 0
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_51_5.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+1 1
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_51_7.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    The half-adder contains everything needed for addition!
+
+NOT+CNOT+Toffoli: can add any set of numbers of any size.
+
+In fact, we could even do without the CNOT and NOT (only used to go from
+\(0 \rightarrow 1\)). \textbf{The Toffoli gate is the atom of quantum
+computation.}
+
+    \hypertarget{representing-qubit-states}{%
+\subsection{Representing Qubit States}\label{representing-qubit-states}}
+
+    Example of statevector
+
+\[ | q_0 \rangle 
+= 
+\begin{bmatrix}
+\frac{1}{\sqrt{2}} \\
+\frac{i}{\sqrt{2}} 
+\end{bmatrix}
+\]
+
+and since \(|0\rangle\) and \(|1\rangle\) form and orthonormal basis, we
+can write the statevector on this basis as a \textbf{superposition} of
+\(|0\rangle\) and \(|1\rangle\):
+
+\[
+| q_0 \rangle 
+= \frac{1}{\sqrt{2}}|0\rangle + \frac{i}{\sqrt{2}}|1\rangle
+\]
+
+    \hypertarget{exploring-qubits-with-qiskit}{%
+\subsubsection{Exploring Qubits with
+Qiskit}\label{exploring-qubits-with-qiskit}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{26}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{from} \PY{n+nn}{qiskit} \PY{k+kn}{import} \PY{n}{QuantumCircuit}\PY{p}{,} \PY{n}{Aer}
+\PY{k+kn}{from} \PY{n+nn}{qiskit}\PY{n+nn}{.}\PY{n+nn}{visualization} \PY{k+kn}{import} \PY{n}{plot\PYZus{}histogram}\PY{p}{,} \PY{n}{plot\PYZus{}bloch\PYZus{}vector}
+\PY{k+kn}{from} \PY{n+nn}{math} \PY{k+kn}{import} \PY{n}{sqrt}\PY{p}{,} \PY{n}{pi}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{27}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{qc} \PY{o}{=} \PY{n}{QuantumCircuit}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{)}\PY{c+c1}{\PYZsh{} Create a quantum circuit with one qubit}
+\end{Verbatim}
+\end{tcolorbox}
+
+    Qubits always start on \(|0\rangle\), but we can use the
+\texttt{initialize()} method to transform it.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{28}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{qc} \PY{o}{=} \PY{n}{QuantumCircuit}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{)}\PY{c+c1}{\PYZsh{} Create a quantum circuit with one qubit}
+\PY{n}{initial\PYZus{}state} \PY{o}{=} \PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{]} \PY{c+c1}{\PYZsh{}\PYZsh{} notice we give it in the matrix form, as a list}
+\PY{n}{qc}\PY{o}{.}\PY{n}{initialize}\PY{p}{(}\PY{n}{initial\PYZus{}state}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{)} \PY{c+c1}{\PYZsh{}\PYZsh{} what we want the initial state to be, which qubit}
+\PY{n}{qc}\PY{o}{.}\PY{n}{draw}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+ 
+            
+\prompt{Out}{outcolor}{28}{}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_59_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    We can them use one of Qiksit simulators to view the resulting state of
+the qubit:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{29}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{sim} \PY{o}{=} \PY{n}{Aer}\PY{o}{.}\PY{n}{get\PYZus{}backend}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{aer\PYZus{}simulator}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+
+\PY{n}{qc} \PY{o}{=} \PY{n}{QuantumCircuit}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{)}\PY{c+c1}{\PYZsh{} Create a quantum circuit with one qubit}
+\PY{n}{initial\PYZus{}state} \PY{o}{=} \PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{]} \PY{c+c1}{\PYZsh{}\PYZsh{} notice we give it in the matrix form, as a list}
+\PY{n}{qc}\PY{o}{.}\PY{n}{initialize}\PY{p}{(}\PY{n}{initial\PYZus{}state}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{)} \PY{c+c1}{\PYZsh{}\PYZsh{} what we want the initial state to be, which qubit}
+\PY{n}{qc}\PY{o}{.}\PY{n}{save\PYZus{}statevector}\PY{p}{(}\PY{p}{)} \PY{c+c1}{\PYZsh{}\PYZsh{} tell sim to save statevector, but only possible with sim, obvioulsy}
+\PY{n}{result} \PY{o}{=} \PY{n}{sim}\PY{o}{.}\PY{n}{run}\PY{p}{(}\PY{n}{qc}\PY{p}{)}\PY{o}{.}\PY{n}{result}\PY{p}{(}\PY{p}{)}  \PY{c+c1}{\PYZsh{}\PYZsh{}.result gets the result of measurement}
+
+\PY{n}{out\PYZus{}state} \PY{o}{=} \PY{n}{result}\PY{o}{.}\PY{n}{get\PYZus{}statevector}\PY{p}{(}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{out\PYZus{}state}\PY{p}{)} \PY{c+c1}{\PYZsh{}\PYZsh{} which should be the state we gave initially}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[0.+0.j 1.+0.j]
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{30}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{qc}\PY{o}{.}\PY{n}{measure\PYZus{}all}\PY{p}{(}\PY{p}{)}
+\PY{n}{qc}\PY{o}{.}\PY{n}{draw}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+ 
+            
+\prompt{Out}{outcolor}{30}{}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_62_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    To see which state we measured, run simulation and
+\texttt{get\_counts()}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{31}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{counts} \PY{o}{=} \PY{n}{result}\PY{o}{.}\PY{n}{get\PYZus{}counts}\PY{p}{(}\PY{p}{)}
+\PY{n}{plot\PYZus{}histogram}\PY{p}{(}\PY{n}{counts}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+ 
+            
+\prompt{Out}{outcolor}{31}{}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_64_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    What if instead we tried the same thing with \(|q_o\rangle\)?
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{32}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{qc} \PY{o}{=} \PY{n}{QuantumCircuit}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{)}
+\PY{n}{initial\PYZus{}state} \PY{o}{=} \PY{p}{[}\PY{l+m+mi}{1}\PY{o}{/}\PY{n}{sqrt}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{,} \PY{l+m+mi}{1}\PY{n}{j}\PY{o}{/}\PY{n}{sqrt}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{]}
+\PY{n}{qc}\PY{o}{.}\PY{n}{initialize}\PY{p}{(}\PY{n}{initial\PYZus{}state}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{qc}\PY{o}{.}\PY{n}{save\PYZus{}statevector}\PY{p}{(}\PY{p}{)}
+\PY{n}{state} \PY{o}{=} \PY{n}{sim}\PY{o}{.}\PY{n}{run}\PY{p}{(}\PY{n}{qc}\PY{p}{)}\PY{o}{.}\PY{n}{result}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{get\PYZus{}statevector}\PY{p}{(}\PY{p}{)} \PY{c+c1}{\PYZsh{}\PYZsh{} which is the final statevector?}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{state}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[0.70710678+0.j         0.        +0.70710678j]
+    \end{Verbatim}
+
+    But what if we make a measurement?
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{33}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{results} \PY{o}{=} \PY{n}{sim}\PY{o}{.}\PY{n}{run}\PY{p}{(}\PY{n}{qc}\PY{p}{)}\PY{o}{.}\PY{n}{result}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{get\PYZus{}counts}\PY{p}{(}\PY{p}{)}
+\PY{n}{plot\PYZus{}histogram}\PY{p}{(}\PY{n}{results}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+ 
+            
+\prompt{Out}{outcolor}{33}{}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_68_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    \hypertarget{the-rules-of-measurement}{%
+\subsubsection{The Rules of
+Measurement}\label{the-rules-of-measurement}}
+
+    Probability of measuring state \(|\psi\rangle\) into state \(|x\rangle\)
+
+\[
+p(|x\rangle) = |\langle x |\psi \rangle|^2 
+\]
+
+where the inner product of
+
+\[
+\langle a| = 
+\begin{bmatrix}
+a_1^* & a_2^* & \cdots & a_n^* 
+\end{bmatrix}
+,
+\ \ \ 
+|b\rangle  = 
+\begin{bmatrix}
+b_1 \\ b_2 \\ \cdots \\ b_n 
+\end{bmatrix}
+\]
+
+is given by
+
+\[
+\langle a| b\rangle = 
+a_1^* b_1 + a_2^* b_2 + \cdots + a_n^* b_n 
+\]
+
+\textbf{In Qiskit, due to normalization, if one tries to initialize a
+vector that is not orthonormal, it will give us an error}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{34}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{vector} \PY{o}{=} \PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{]}
+\PY{n}{qc}\PY{o}{.}\PY{n}{initialize}\PY{p}{(}\PY{n}{vector}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}, frame=single, framerule=2mm, rulecolor=\color{outerrorbackground}]
+\textcolor{ansi-red}{---------------------------------------------------------------------------}
+\textcolor{ansi-red}{QiskitError}                               Traceback (most recent call last)
+\textcolor{ansi-green}{<ipython-input-34-ddc73828b990>} in \textcolor{ansi-cyan}{<module>}
+\textcolor{ansi-green-intense}{\textbf{      1}} vector \textcolor{ansi-blue}{=} \textcolor{ansi-blue}{[}\textcolor{ansi-cyan}{1}\textcolor{ansi-blue}{,}\textcolor{ansi-cyan}{1}\textcolor{ansi-blue}{]}
+\textcolor{ansi-green}{----> 2}\textcolor{ansi-red}{ }qc\textcolor{ansi-blue}{.}initialize\textcolor{ansi-blue}{(}vector\textcolor{ansi-blue}{,} \textcolor{ansi-cyan}{0}\textcolor{ansi-blue}{)}
+
+\textcolor{ansi-green}{\textasciitilde{}/opt/anaconda3/lib/python3.8/site-packages/qiskit/extensions/quantum\_initializer/initializer.py} in \textcolor{ansi-cyan}{initialize}\textcolor{ansi-blue}{(self, params, qubits)}
+\textcolor{ansi-green-intense}{\textbf{    457}} 
+\textcolor{ansi-green-intense}{\textbf{    458}}     num\_qubits \textcolor{ansi-blue}{=} \textcolor{ansi-green}{None} \textcolor{ansi-green}{if} \textcolor{ansi-green}{not} isinstance\textcolor{ansi-blue}{(}params\textcolor{ansi-blue}{,} int\textcolor{ansi-blue}{)} \textcolor{ansi-green}{else} len\textcolor{ansi-blue}{(}qubits\textcolor{ansi-blue}{)}
+\textcolor{ansi-green}{--> 459}\textcolor{ansi-red}{     }\textcolor{ansi-green}{return} self\textcolor{ansi-blue}{.}append\textcolor{ansi-blue}{(}Initialize\textcolor{ansi-blue}{(}params\textcolor{ansi-blue}{,} num\_qubits\textcolor{ansi-blue}{)}\textcolor{ansi-blue}{,} qubits\textcolor{ansi-blue}{)}
+\textcolor{ansi-green-intense}{\textbf{    460}} 
+\textcolor{ansi-green-intense}{\textbf{    461}} 
+
+\textcolor{ansi-green}{\textasciitilde{}/opt/anaconda3/lib/python3.8/site-packages/qiskit/extensions/quantum\_initializer/initializer.py} in \textcolor{ansi-cyan}{\_\_init\_\_}\textcolor{ansi-blue}{(self, params, num\_qubits)}
+\textcolor{ansi-green-intense}{\textbf{     90}}             \textcolor{ansi-red}{\# Check if probabilities (amplitudes squared) sum to 1}
+\textcolor{ansi-green-intense}{\textbf{     91}}             \textcolor{ansi-green}{if} \textcolor{ansi-green}{not} math\textcolor{ansi-blue}{.}isclose\textcolor{ansi-blue}{(}sum\textcolor{ansi-blue}{(}np\textcolor{ansi-blue}{.}absolute\textcolor{ansi-blue}{(}params\textcolor{ansi-blue}{)} \textcolor{ansi-blue}{**} \textcolor{ansi-cyan}{2}\textcolor{ansi-blue}{)}\textcolor{ansi-blue}{,} \textcolor{ansi-cyan}{1.0}\textcolor{ansi-blue}{,} abs\_tol\textcolor{ansi-blue}{=}\_EPS\textcolor{ansi-blue}{)}\textcolor{ansi-blue}{:}
+\textcolor{ansi-green}{---> 92}\textcolor{ansi-red}{                 }\textcolor{ansi-green}{raise} QiskitError\textcolor{ansi-blue}{(}\textcolor{ansi-blue}{"Sum of amplitudes-squared does not equal one."}\textcolor{ansi-blue}{)}
+\textcolor{ansi-green-intense}{\textbf{     93}} 
+\textcolor{ansi-green-intense}{\textbf{     94}}             num\_qubits \textcolor{ansi-blue}{=} int\textcolor{ansi-blue}{(}num\_qubits\textcolor{ansi-blue}{)}
+
+\textcolor{ansi-red}{QiskitError}: 'Sum of amplitudes-squared does not equal one.'
+    \end{Verbatim}
+
+    Quick exercises: 1. Create a state vector that will give a \(1/3\)
+probability of measuring \(|0\rangle\) 2. Create a different state
+vector that will give the same measurement probabilities. 3. Verify that
+the probability of measuring \(|1\rangle\) for these states is \(2/3\).
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{35}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{qc} \PY{o}{=} \PY{n}{QuantumCircuit}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{)}
+\PY{n}{initial\PYZus{}vector\PYZus{}1} \PY{o}{=} \PY{p}{[}\PY{l+m+mi}{1}\PY{o}{/}\PY{n}{sqrt}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{)}\PY{p}{,} \PY{n}{sqrt}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{)}\PY{o}{/}\PY{n}{sqrt}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{)}\PY{p}{]}
+\PY{n}{qc}\PY{o}{.}\PY{n}{initialize}\PY{p}{(}\PY{n}{initial\PYZus{}vector\PYZus{}1}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{qc}\PY{o}{.}\PY{n}{save\PYZus{}statevector}\PY{p}{(}\PY{p}{)} \PY{c+c1}{\PYZsh{}\PYZsh{} We need to save statevector after initializing it, apparently}
+\PY{n}{results} \PY{o}{=} \PY{n}{sim}\PY{o}{.}\PY{n}{run}\PY{p}{(}\PY{n}{qc}\PY{p}{)}\PY{o}{.}\PY{n}{result}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{get\PYZus{}counts}\PY{p}{(}\PY{p}{)}
+\PY{n}{plot\PYZus{}histogram}\PY{p}{(}\PY{n}{results}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+ 
+            
+\prompt{Out}{outcolor}{35}{}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_73_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{36}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{qc} \PY{o}{=} \PY{n}{QuantumCircuit}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{)}
+\PY{n}{initial\PYZus{}vector\PYZus{}2} \PY{o}{=} \PY{p}{[}\PY{l+m+mi}{1}\PY{n}{j}\PY{o}{/}\PY{n}{sqrt}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{)}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{n}{sqrt}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{)}\PY{o}{/}\PY{n}{sqrt}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{)}\PY{p}{]}
+\PY{n}{qc}\PY{o}{.}\PY{n}{initialize}\PY{p}{(}\PY{n}{initial\PYZus{}vector\PYZus{}2}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{)}
+\PY{c+c1}{\PYZsh{}qc.measure\PYZus{}all()}
+\PY{n}{qc}\PY{o}{.}\PY{n}{save\PYZus{}statevector}\PY{p}{(}\PY{p}{)} \PY{c+c1}{\PYZsh{}\PYZsh{} We need to save statevector after initializing it, apparently}
+\PY{n}{results} \PY{o}{=} \PY{n}{sim}\PY{o}{.}\PY{n}{run}\PY{p}{(}\PY{n}{qc}\PY{p}{)}\PY{o}{.}\PY{n}{result}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{get\PYZus{}counts}\PY{p}{(}\PY{p}{)}
+\PY{n}{plot\PYZus{}histogram}\PY{p}{(}\PY{n}{results}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+ 
+            
+\prompt{Out}{outcolor}{36}{}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_74_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    \#2 And obviously, notice we can also measure in a different basis
+
+\#3 \emph{Global phases}, typically not physically relevant:
+
+\(\gamma\) such that \(|\gamma|=1\)
+
+which are different from \emph{relative phases}.
+
+    \#4 Once measured, we know for certain which state the qubit is
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{37}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{qc} \PY{o}{=} \PY{n}{QuantumCircuit}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{)}
+\PY{n}{initial\PYZus{}state} \PY{o}{=} \PY{p}{[}\PY{l+m+mi}{1}\PY{o}{/}\PY{n}{sqrt}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{,} \PY{l+m+mi}{1}\PY{n}{j}\PY{o}{/}\PY{n}{sqrt}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{]}
+\PY{n}{qc}\PY{o}{.}\PY{n}{initialize}\PY{p}{(}\PY{n}{initial\PYZus{}state}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{qc}\PY{o}{.}\PY{n}{draw}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+ 
+            
+\prompt{Out}{outcolor}{37}{}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_77_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    But after the measurement
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{38}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{qc} \PY{o}{=} \PY{n}{QuantumCircuit}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{)}
+\PY{n}{initial\PYZus{}state} \PY{o}{=} \PY{p}{[}\PY{l+m+mi}{1}\PY{o}{/}\PY{n}{sqrt}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{,} \PY{l+m+mi}{1}\PY{n}{j}\PY{o}{/}\PY{n}{sqrt}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{]}
+\PY{n}{qc}\PY{o}{.}\PY{n}{initialize}\PY{p}{(}\PY{n}{initial\PYZus{}state}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{qc}\PY{o}{.}\PY{n}{measure\PYZus{}all}\PY{p}{(}\PY{p}{)}
+\PY{n}{qc}\PY{o}{.}\PY{n}{save\PYZus{}statevector}\PY{p}{(}\PY{p}{)}
+\PY{n}{qc}\PY{o}{.}\PY{n}{draw}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+ 
+            
+\prompt{Out}{outcolor}{38}{}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_79_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{39}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{state} \PY{o}{=} \PY{n}{sim}\PY{o}{.}\PY{n}{run}\PY{p}{(}\PY{n}{qc}\PY{p}{)}\PY{o}{.}\PY{n}{result}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{get\PYZus{}statevector}\PY{p}{(}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{state}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[1.+0.j 0.+0.j]
+    \end{Verbatim}
+
+    We can see that writing down a qubit's state requires keeping track of
+two complex numbers, but when using a real quantum computer we will only
+ever receive a yes-or-no (0 or 1) answer for each qubit. The output of a
+10-qubit quantum computer will look like this:
+
+\(0110111110\)
+
+Just 10 bits, no superposition or complex amplitudes. When using a real
+quantum computer, we cannot see the states of our qubits
+mid-computation, as this would destroy them! This behaviour is not ideal
+for learning, so Qiskit provides different quantum simulators: By
+default, the aer\_simulator mimics the execution of a real quantum
+computer, but will also allow you to peek at quantum states before
+measurement if we include certain instructions in our circuit. For
+example, here we have included the instruction
+\texttt{.save\_statevector()}, which means we can use
+\texttt{.get\_statevector()} on the result of the simulation.
+
+    \hypertarget{the-bloch-sphere}{%
+\subsubsection{The Bloch Sphere}\label{the-bloch-sphere}}
+
+    The Qubit is described by
+
+\[|q\rangle = \alpha|0\rangle + \beta|1\rangle, \ \ \alpha, \beta \  \mathrm{in} \ \mathbb{C} \]
+
+but since we cannot observe global phases, we can remove one of the
+degrees of freedom and rewrite this as
+
+\[|q\rangle = \alpha|0\rangle + e^{i\phi}\beta|1\rangle, \ \ \alpha, \beta, \phi \  \mathrm{in} \ \mathbb{R} \]
+
+and given the normalization \(|\alpha|^2 + |\beta|^2 = 1\), we can use
+the trigonometric identity \(\sin^2 x + \cos^2 x = 1\) to describe
+\(\alpha, \beta\) in \(\mathbb{R}\) in terms of a single angle
+\(\theta\),
+
+\[ \alpha = \cos\frac{\theta}{2}, \ \ \beta = \sin\frac{\theta}{2},\]
+
+and describe the qubit using two angles \(\phi\) and \(\theta\),
+
+\[|q\rangle = \cos\frac{\theta}{2}|0\rangle + e^{i\phi}\sin\frac{\theta}{2}|1\rangle, \ \ \theta, \phi \  \mathrm{in} \ \mathbb{R}\]
+
+    This means we can represent these states in a Bloch sphere:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{40}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{from} \PY{n+nn}{qiskit\PYZus{}textbook}\PY{n+nn}{.}\PY{n+nn}{widgets} \PY{k+kn}{import} \PY{n}{plot\PYZus{}bloch\PYZus{}vector\PYZus{}spherical}
+\PY{n}{coords} \PY{o}{=} \PY{p}{[}\PY{n}{pi}\PY{o}{/}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{]} \PY{c+c1}{\PYZsh{}\PYZsh{} theta, phi, radius}
+\PY{n}{plot\PYZus{}bloch\PYZus{}vector\PYZus{}spherical}\PY{p}{(}\PY{n}{coords}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+ 
+            
+\prompt{Out}{outcolor}{40}{}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_85_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    \textbf{Do not confuse the \emph{Bloch vector} with the
+\emph{statevector}. The Bloch vector is a visualisation tool that maps
+the 2D, complex statevector onto real, 3D space.}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{41}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} 1: state 0 \PYZhy{}\PYZgt{} theta = 0, phi = 0}
+
+\PY{n}{coords} \PY{o}{=} \PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{]}
+\PY{n}{plot\PYZus{}bloch\PYZus{}vector\PYZus{}spherical}\PY{p}{(}\PY{n}{coords}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+ 
+            
+\prompt{Out}{outcolor}{41}{}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_87_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{42}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} 2: state 1 \PYZhy{}\PYZgt{} theta = pi, phi = 0}
+\PY{n}{coords} \PY{o}{=} \PY{p}{[}\PY{n}{pi}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{]}
+\PY{n}{plot\PYZus{}bloch\PYZus{}vector\PYZus{}spherical}\PY{p}{(}\PY{n}{coords}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+ 
+            
+\prompt{Out}{outcolor}{42}{}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_88_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{43}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} 3: state (1/sqrt(2))(0+1) \PYZhy{}\PYZgt{} theta = pi/2, phi = 0}
+\PY{n}{coords} \PY{o}{=} \PY{p}{[}\PY{n}{pi}\PY{o}{/}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{]}
+\PY{n}{plot\PYZus{}bloch\PYZus{}vector\PYZus{}spherical}\PY{p}{(}\PY{n}{coords}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+ 
+            
+\prompt{Out}{outcolor}{43}{}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_89_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{44}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} 4: tate (1/sqrt(2))(0\PYZhy{}i*1) \PYZhy{}\PYZgt{} theta = pi/2, phi = 3pi/2}
+\PY{n}{coords} \PY{o}{=} \PY{p}{[}\PY{n}{pi}\PY{o}{/}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{3}\PY{o}{*}\PY{n}{pi}\PY{o}{/}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{]}
+\PY{n}{plot\PYZus{}bloch\PYZus{}vector\PYZus{}spherical}\PY{p}{(}\PY{n}{coords}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+ 
+            
+\prompt{Out}{outcolor}{44}{}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_90_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{45}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} 5: tate (1/sqrt(2))(0\PYZhy{}i*1) \PYZhy{}\PYZgt{} theta = pi/2, phi = 3pi/2}
+\PY{n}{coords} \PY{o}{=} \PY{p}{[}\PY{n}{pi}\PY{o}{/}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{3}\PY{o}{*}\PY{n}{pi}\PY{o}{/}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{]}
+\PY{n}{plot\PYZus{}bloch\PYZus{}vector\PYZus{}spherical}\PY{p}{(}\PY{n}{coords}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+ 
+            
+\prompt{Out}{outcolor}{45}{}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_91_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{46}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{from} \PY{n+nn}{qiskit\PYZus{}textbook}\PY{n+nn}{.}\PY{n+nn}{widgets} \PY{k+kn}{import} \PY{n}{bloch\PYZus{}calc}
+\PY{n}{bloch\PYZus{}calc}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+VBox(children=(Label(value='Define a qubit state using \$\textbackslash{}\textbackslash{}theta\$ and \$\textbackslash{}\textbackslash{}phi\$:'), Text(value='', placeholder='T…
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+HTML(value='<pre></pre>')
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Image(value=b'\textbackslash{}x89PNG\textbackslash{}r\textbackslash{}n\textbackslash{}x1a\textbackslash{}n\textbackslash{}x00\textbackslash{}x00\textbackslash{}x00\textbackslash{}rIHDR\textbackslash{}x00\textbackslash{}x00\textbackslash{}x01h\textbackslash{}x00\textbackslash{}x00\textbackslash{}x01h\textbackslash{}x08\textbackslash{}x06\textbackslash{}x00\textbackslash{}x00\textbackslash{}x00z\textbackslash{}xe5a\textbackslash{}xd5\textbackslash{}x00\textbackslash{}…
+    \end{Verbatim}
+
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{single-qubit-gates}{%
+\subsection{Single Qubit Gates}\label{single-qubit-gates}}
+
+    In this section we will cover gates, the operations that change a qubit
+between these states.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{47}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{from} \PY{n+nn}{qiskit} \PY{k+kn}{import} \PY{n}{QuantumCircuit}\PY{p}{,} \PY{n}{Aer}
+\PY{k+kn}{from} \PY{n+nn}{math} \PY{k+kn}{import} \PY{n}{pi}\PY{p}{,} \PY{n}{sqrt}
+\PY{k+kn}{from} \PY{n+nn}{qiskit}\PY{n+nn}{.}\PY{n+nn}{visualization} \PY{k+kn}{import} \PY{n}{plot\PYZus{}bloch\PYZus{}multivector}\PY{p}{,} \PY{n}{plot\PYZus{}histogram}
+\PY{n}{sim} \PY{o}{=} \PY{n}{Aer}\PY{o}{.}\PY{n}{get\PYZus{}backend}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{aer\PYZus{}simulator}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{the-pauli-gates}{%
+\subsubsection{The Pauli Gates}\label{the-pauli-gates}}
+
+    \hypertarget{the-x-gate}{%
+\paragraph{The X-Gate}\label{the-x-gate}}
+
+    Pauli-X matrix
+
+\[
+X = 
+\begin{bmatrix}
+0 & 1 \\
+1 & 0
+\end{bmatrix}
+=
+|0\rangle \langle 1| + |1\rangle \langle 0|
+\]
+
+To see the effect of the gate, let's apply to \(|0\rangle\) \&
+\(|1\rangle\).
+
+\[
+X|0\rangle = 
+\begin{bmatrix}
+0 & 1 \\
+1 & 0
+\end{bmatrix}
+\begin{bmatrix}
+1  \\
+0
+\end{bmatrix}
+=
+\begin{bmatrix}
+0  \\
+1
+\end{bmatrix}
+=
+|1\rangle
+\]
+
+\(\pi\) rotation around the X-axis
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{48}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{qc} \PY{o}{=} \PY{n}{QuantumCircuit}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{)}
+\PY{n}{qc}\PY{o}{.}\PY{n}{x}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{qc}\PY{o}{.}\PY{n}{draw}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+ 
+            
+\prompt{Out}{outcolor}{48}{}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_102_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{49}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{qc}\PY{o}{.}\PY{n}{save\PYZus{}statevector}\PY{p}{(}\PY{p}{)}
+\PY{n}{state} \PY{o}{=} \PY{n}{sim}\PY{o}{.}\PY{n}{run}\PY{p}{(}\PY{n}{qc}\PY{p}{)}\PY{o}{.}\PY{n}{result}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{get\PYZus{}statevector}\PY{p}{(}\PY{p}{)}
+\PY{n}{plot\PYZus{}bloch\PYZus{}multivector}\PY{p}{(}\PY{n}{state}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+ 
+            
+\prompt{Out}{outcolor}{49}{}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_103_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    \hypertarget{the-y-z-gates}{%
+\paragraph{The Y \& Z-Gates}\label{the-y-z-gates}}
+
+    \[
+Y = 
+\begin{bmatrix}
+0 & -i \\
+i & 0
+\end{bmatrix}
+=
+-i|0\rangle \langle 1| + i|1\rangle \langle 0|
+\]
+
+\[
+Z = 
+\begin{bmatrix}
+1 & 0 \\
+0 & -1
+\end{bmatrix}
+=
+|0\rangle \langle 0| - |1\rangle \langle 1|
+\]
+
+\(\pi\) rotation around y- and z-axis, respectively.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{50}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{from} \PY{n+nn}{qiskit\PYZus{}textbook}\PY{n+nn}{.}\PY{n+nn}{widgets} \PY{k+kn}{import} \PY{n}{gate\PYZus{}demo}
+\PY{n}{gate\PYZus{}demo}\PY{p}{(}\PY{n}{gates}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{pauli}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+HBox(children=(Button(description='X', layout=Layout(height='3em', width='3em'), style=ButtonStyle()), Button(…
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Image(value=b'\textbackslash{}x89PNG\textbackslash{}r\textbackslash{}n\textbackslash{}x1a\textbackslash{}n\textbackslash{}x00\textbackslash{}x00\textbackslash{}x00\textbackslash{}rIHDR\textbackslash{}x00\textbackslash{}x00\textbackslash{}x01 \textbackslash{}x00\textbackslash{}x00\textbackslash{}x01 \textbackslash{}x08\textbackslash{}x06\textbackslash{}x00\textbackslash{}x00\textbackslash{}x00\textbackslash{}x14\textbackslash{}x83\textbackslash{}xae\textbackslash{}x8…
+    \end{Verbatim}
+
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{51}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{qc}\PY{o}{.}\PY{n}{y}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{qc}\PY{o}{.}\PY{n}{z}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{)} 
+\PY{n}{qc}\PY{o}{.}\PY{n}{draw}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+ 
+            
+\prompt{Out}{outcolor}{51}{}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_107_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{digression-the-x-y-z-bases}{%
+\subsubsection{Digression: the X, Y \& Z
+Bases}\label{digression-the-x-y-z-bases}}
+
+    \(|0\rangle\) and \(|1\rangle\) are the two eigenstatesof the Z-gate. In
+fact, the \emph{computational basis} (\(|0\rangle\) and \(|1\rangle\))
+is often called \emph{Z-basis}. Another popular basis is the
+\emph{X-basis}, the eigenstates of the X-gate:
+
+\[
+|+\rangle 
+= \frac{1}{\sqrt{2}}(|0\rangle + |1\rangle) 
+= \frac{1}{\sqrt{2}}
+\begin{bmatrix}
+1\\
+1
+\end{bmatrix}
+\]
+
+\[
+|-\rangle 
+= \frac{1}{\sqrt{2}}(|0\rangle - |1\rangle) 
+= \frac{1}{\sqrt{2}}
+\begin{bmatrix}
+1\\
+-1
+\end{bmatrix}
+\]
+
+    The less common are the eigenstates of the Y-gate,
+\(|\circlearrowleft \rangle\) and \(| \circlearrowright \rangle\)
+
+    \textbf{Quick exercises}
+
+\#1 Verify that \(|+\rangle\) and \(|-\rangle\) are in fact eigenstates
+of the X-gate.
+
+\#2. What eigenvalues do they have?
+
+\[
+\begin{eqnarray}
+X |+\rangle &= |+\rangle \\
+X |-\rangle &= -|-\rangle
+\end{eqnarray}
+\]
+
+\#3 Find the eigenstates of the Y-gate, and their co-ordinates on the
+Bloch sphere.
+
+\textbf{Eigenvalues}: \[
+\begin{bmatrix}
+-\lambda & -i \\
+i & -\lambda
+\end{bmatrix}
+\rightarrow \lambda^2 = 1 \rightarrow \lambda = \pm 1
+\]
+
+\textbf{Eigenvectors}: \[
+\lambda = +1, \alpha=1 \rightarrow 
+\begin{bmatrix}
+-i\beta \\
+i
+\end{bmatrix}
+=
+\begin{bmatrix}
+1 \\
+\beta
+\end{bmatrix}
+\rightarrow \beta = i 
+\rightarrow |\lambda\rangle_+ = \frac{1}{\sqrt{2}}
+\begin{bmatrix}
+1 \\
+i
+\end{bmatrix}
+= \frac{1}{\sqrt{2}}(|0\rangle + i|1\rangle)
+\]
+
+\[
+\lambda = -1, \alpha=1 \rightarrow 
+\begin{bmatrix}
+-i\beta \\
+i
+\end{bmatrix}
+=
+\begin{bmatrix}
+-1 \\
+-\beta
+\end{bmatrix}
+\rightarrow \beta = -i 
+\rightarrow 
+|\lambda\rangle_- = \frac{1}{\sqrt{2}}
+\begin{bmatrix}
+1 \\
+-i
+\end{bmatrix} 
+= \frac{1}{\sqrt{2}}(|0\rangle - i|1\rangle)
+\]
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{52}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np}
+\PY{k+kn}{from} \PY{n+nn}{numpy}\PY{n+nn}{.}\PY{n+nn}{linalg} \PY{k+kn}{import} \PY{n}{eig}
+\PY{n}{a} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{0}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{n}{j}\PY{p}{]}\PY{p}{,} 
+              \PY{p}{[}\PY{l+m+mi}{0}\PY{o}{+}\PY{l+m+mi}{1}\PY{n}{j}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{]}\PY{p}{]}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{a}\PY{p}{)}
+\PY{n}{w}\PY{p}{,}\PY{n}{v}\PY{o}{=}\PY{n}{eig}\PY{p}{(}\PY{n}{a}\PY{p}{)}
+
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{E\PYZhy{}value:}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{w}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{E\PYZhy{}vector}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{v}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[0.+0.j 0.-1.j]
+ [0.+1.j 0.+0.j]]
+E-value: [ 1.+0.j -1.+0.j]
+
+E-vector [[-0.        -0.70710678j  0.70710678+0.j        ]
+ [ 0.70710678+0.j          0.        -0.70710678j]]
+    \end{Verbatim}
+
+    \textbf{Using only Paulis we cannot move the qubit away from
+\(|0\rangle\), \(|1\rangle\) and we cannot achieve superpositions.}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{the-hadamard-gate}{%
+\subsubsection{The Hadamard Gate}\label{the-hadamard-gate}}
+
+    H-Gate
+
+\[
+H= \frac{1}{\sqrt(2)}
+\begin{bmatrix}
+1 & 1 \\
+1 & -1
+\end{bmatrix}
+\]
+
+Which allows the transformations
+
+\[
+H| 0 \rangle = \frac{1}{\sqrt{2}} 
+\begin{bmatrix}
+1 \\
+1
+\end{bmatrix} 
+= |+\rangle
+\]
+
+\[
+H| 1 \rangle = \frac{1}{\sqrt{2}} 
+\begin{bmatrix}
+1 \\
+-1
+\end{bmatrix} 
+= |-\rangle
+\]
+
+Which can be thought as a rotation of \(\pi/2\) around the Bloch vector
+\([1, 0,1]\) (or around the y-axis), transforming the state of the qubit
+between the X and Z bases.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{53}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{from} \PY{n+nn}{qiskit\PYZus{}textbook}\PY{n+nn}{.}\PY{n+nn}{widgets} \PY{k+kn}{import} \PY{n}{gate\PYZus{}demo}
+\PY{n}{gate\PYZus{}demo}\PY{p}{(}\PY{n}{gates}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{pauli+h}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+HBox(children=(Button(description='X', layout=Layout(height='3em', width='3em'), style=ButtonStyle()), Button(…
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Image(value=b'\textbackslash{}x89PNG\textbackslash{}r\textbackslash{}n\textbackslash{}x1a\textbackslash{}n\textbackslash{}x00\textbackslash{}x00\textbackslash{}x00\textbackslash{}rIHDR\textbackslash{}x00\textbackslash{}x00\textbackslash{}x01 \textbackslash{}x00\textbackslash{}x00\textbackslash{}x01 \textbackslash{}x08\textbackslash{}x06\textbackslash{}x00\textbackslash{}x00\textbackslash{}x00\textbackslash{}x14\textbackslash{}x83\textbackslash{}xae\textbackslash{}x8…
+    \end{Verbatim}
+
+    
+    \textbf{Quick exercises:}
+
+\begin{itemize}
+\tightlist
+\item
+  \#1 Write the H-gate as the outer products of vectors
+  \(|0\rangle, |1\rangle, |+\rangle, |-\rangle\)
+\end{itemize}
+
+We have that:
+
+\[
+\begin{eqnarray}
+|0\rangle \langle 0| &= 
+\begin{bmatrix}
+1 & 0 \\
+0 & 0
+\end{bmatrix}\\
+|0\rangle \langle 1| &=
+\begin{bmatrix}
+0 & 1 \\
+0 & 0
+\end{bmatrix}\\
+|1\rangle \langle 0| &= 
+\begin{bmatrix}
+0 & 0 \\
+1 & 0
+\end{bmatrix}\\
+|1\rangle \langle 1| &= 
+\begin{bmatrix}
+0 & 0 \\
+0 & 1
+\end{bmatrix}
+\end{eqnarray}
+\]
+
+and
+
+\[
+\begin{eqnarray}
+|+\rangle \langle +| &= \frac{1}{2}
+\begin{bmatrix}
+1 & 1 \\
+1 & 1
+\end{bmatrix}\\
+|+\rangle \langle -| &=\frac{1}{2}
+\begin{bmatrix}
+1 & -1 \\
+1 & -1
+\end{bmatrix}\\
+|-\rangle \langle +| &= \frac{1}{2}
+\begin{bmatrix}
+1 & 1 \\
+-1 & -1
+\end{bmatrix}\\
+|-\rangle \langle -| &= \frac{1}{2}
+\begin{bmatrix}
+1 & -1 \\
+-1 & 1
+\end{bmatrix}
+\end{eqnarray}
+\]
+
+and therefore,
+
+\[
+H = \frac{1}{\sqrt{2}}\left[ |0\rangle \langle 0| 
++ |0\rangle \langle 1| + |1\rangle \langle 0| - |1\rangle \langle 1|\right]
+=
+\frac{1}{\sqrt{8}}\left[ |+\rangle \langle +| 
++ |+\rangle \langle -| + |-\rangle \langle +| - |-\rangle \langle -|\right]
+\]
+
+\begin{itemize}
+\tightlist
+\item
+  \#2 Show that applying the sequence of gates: HZH, to any qubit state
+  is equivalent to applying an X-gate.
+\end{itemize}
+
+\[
+HZH = \frac{1}{2}
+\begin{bmatrix}
+1 & 1 \\
+-1 & -1
+\end{bmatrix}
+\begin{bmatrix}
+1 & 0 \\
+0 & -1
+\end{bmatrix}
+\begin{bmatrix}
+1 & 1 \\
+-1 & -1
+\end{bmatrix} 
+= \frac{1}{2}
+\begin{bmatrix}
+1 & -1 \\
+1 & 1
+\end{bmatrix}
+\begin{bmatrix}
+1 & 1 \\
+-1 & -1
+\end{bmatrix} 
+=\frac{1}{2}
+\begin{bmatrix}
+0 & 2 \\
+2 & 0
+\end{bmatrix}
+= X
+\]
+
+\begin{itemize}
+\tightlist
+\item
+  \#3 Find a combination of X, Z and H-gates that is equivalent to a
+  Y-gate (ignoring global phase).
+\end{itemize}
+
+From the properties of Pauli matrices, \(ZX = iY\)
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{digression-measuring-in-different-bases}{%
+\subsubsection{Digression: Measuring in Different
+Bases}\label{digression-measuring-in-different-bases}}
+
+    Since Qiskit only allows measuring in the Z-basis, if we want to make
+measurements in a different basis we must create it using Hadamard
+gates. To measure on the X-basis, for instance:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{54}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}\PYZsh{} Create the X\PYZhy{}measurememnt function}
+\PY{k}{def} \PY{n+nf}{x\PYZus{}measurement}\PY{p}{(}\PY{n}{qc}\PY{p}{,} \PY{n}{qubit}\PY{p}{,} \PY{n}{cbit}\PY{p}{)}\PY{p}{:}
+    \PY{l+s+sd}{\PYZsq{}\PYZsq{}\PYZsq{}}
+\PY{l+s+sd}{    Measures \PYZsq{}\PYZsq{}qubit in the X\PYZhy{}basis and store the result in \PYZsq{}cbit\PYZsq{}}
+\PY{l+s+sd}{    \PYZsq{}\PYZsq{}\PYZsq{}}
+    \PY{n}{qc}\PY{o}{.}\PY{n}{h}\PY{p}{(}\PY{n}{qubit}\PY{p}{)}  \PY{c+c1}{\PYZsh{}\PYZsh{} transforms from the Z\PYZhy{}basis to the X\PYZhy{}basis}
+    \PY{n}{qc}\PY{o}{.}\PY{n}{measure}\PY{p}{(}\PY{n}{qubit}\PY{p}{,} \PY{n}{cbit}\PY{p}{)}
+    \PY{k}{return} \PY{n}{qc}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{55}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{initial\PYZus{}state} \PY{o}{=}\PY{p}{[}\PY{l+m+mi}{1}\PY{o}{/}\PY{n}{sqrt}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{o}{/}\PY{n}{sqrt}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{]}
+\PY{n}{qc} \PY{o}{=} \PY{n}{QuantumCircuit}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{)} \PY{c+c1}{\PYZsh{}\PYZsh{}notice the addition of cbit for the measurements}
+\PY{n}{qc}\PY{o}{.}\PY{n}{initialize}\PY{p}{(}\PY{n}{initial\PYZus{}state}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{x\PYZus{}measurement}\PY{p}{(}\PY{n}{qc}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{)} \PY{c+c1}{\PYZsh{}measure qubit 0 to classical bit 0}
+\PY{n}{qc}\PY{o}{.}\PY{n}{draw}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+ 
+            
+\prompt{Out}{outcolor}{55}{}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_124_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    Remember that \(X=HZH\). What this is doing is:
+
+H-gate switches the qubit to X-basis, \[
+\begin{eqnarray}
+H|0\rangle &= |+\rangle\\
+H|1\rangle &= |-\rangle
+\end{eqnarray}
+\]
+
+Z-gate performs a NOT in the X-basis, \[
+\begin{eqnarray}
+Z|+\rangle &= |-\rangle\\
+Z|-\rangle &= |+\rangle
+\end{eqnarray}
+\]
+
+and the final H-gate returns the qubit to the Z-basis. \[
+\begin{eqnarray}
+H|+\rangle &= |0\rangle\\
+H|-\rangle &= |1\rangle
+\end{eqnarray}
+\]
+
+    \textbf{Quick exercises}:
+
+\#1 If we initialize our qubit in the state \(|+\rangle\), what is the
+probability of measuring it in state \(|-\rangle\) ?
+
+\#2 Use Qiskit to display the probability of measuring a \(|0\rangle\)
+qubit in the states \(|+\rangle\) and \(|-\rangle\) (Hint: you might
+want to use .get\_counts() and plot\_histogram()).
+
+\#3 Try to create a function that measures in the Y-basis.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{56}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Probability is zero}
+\PY{n}{initial\PYZus{}state} \PY{o}{=}\PY{p}{[}\PY{l+m+mi}{1}\PY{o}{/}\PY{n}{sqrt}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{,} \PY{l+m+mi}{1}\PY{o}{/}\PY{n}{sqrt}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{]}
+\PY{n}{qc} \PY{o}{=} \PY{n}{QuantumCircuit}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{)} \PY{c+c1}{\PYZsh{}\PYZsh{}notice the addition of cbit for the measurements}
+\PY{n}{qc}\PY{o}{.}\PY{n}{initialize}\PY{p}{(}\PY{n}{initial\PYZus{}state}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{x\PYZus{}measurement}\PY{p}{(}\PY{n}{qc}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{)} \PY{c+c1}{\PYZsh{}measure qubit 0 to classical bit 0}
+\PY{n}{counts} \PY{o}{=} \PY{n}{sim}\PY{o}{.}\PY{n}{run}\PY{p}{(}\PY{n}{qc}\PY{p}{)}\PY{o}{.}\PY{n}{result}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{get\PYZus{}counts}\PY{p}{(}\PY{p}{)}
+\PY{n}{plot\PYZus{}histogram}\PY{p}{(}\PY{n}{counts}\PY{p}{)}
+\PY{c+c1}{\PYZsh{}qc.draw()}
+\end{Verbatim}
+\end{tcolorbox}
+ 
+            
+\prompt{Out}{outcolor}{56}{}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_127_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{57}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{qc} \PY{o}{=} \PY{n}{QuantumCircuit}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{)}
+\PY{n}{x\PYZus{}measurement}\PY{p}{(}\PY{n}{qc}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{counts} \PY{o}{=} \PY{n}{sim}\PY{o}{.}\PY{n}{run}\PY{p}{(}\PY{n}{qc}\PY{p}{)}\PY{o}{.}\PY{n}{result}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{get\PYZus{}counts}\PY{p}{(}\PY{p}{)}
+\PY{n}{plot\PYZus{}histogram}\PY{p}{(}\PY{n}{counts}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{}\PYZsh{} Probability is 1/2 and 1/2}
+\end{Verbatim}
+\end{tcolorbox}
+ 
+            
+\prompt{Out}{outcolor}{57}{}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_128_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{58}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{y\PYZus{}measurement}\PY{p}{(}\PY{n}{qc}\PY{p}{,}\PY{n}{qubit}\PY{p}{,}\PY{n}{cbit}\PY{p}{)}\PY{p}{:}
+    \PY{n}{qc}\PY{o}{.}\PY{n}{sdg}\PY{p}{(}\PY{n}{qubit}\PY{p}{)}
+    \PY{n}{qc}\PY{o}{.}\PY{n}{h}\PY{p}{(}\PY{n}{qubit}\PY{p}{)}
+    \PY{n}{qc}\PY{o}{.}\PY{n}{measure}\PY{p}{(}\PY{n}{qubit}\PY{p}{,}\PY{n}{cbit}\PY{p}{)}
+    \PY{k}{return} \PY{n}{qc}
+
+\PY{n}{circuit} \PY{o}{=} \PY{n}{QuantumCircuit}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{)}
+\PY{n}{circuit}\PY{o}{.}\PY{n}{h}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{circuit}\PY{o}{.}\PY{n}{barrier}\PY{p}{(}\PY{p}{)}
+
+
+\PY{n}{y\PYZus{}measurement}\PY{p}{(}\PY{n}{circuit}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{counts} \PY{o}{=} \PY{n}{sim}\PY{o}{.}\PY{n}{run}\PY{p}{(}\PY{n}{qc}\PY{p}{)}\PY{o}{.}\PY{n}{result}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{get\PYZus{}counts}\PY{p}{(}\PY{p}{)}
+\PY{n}{plot\PYZus{}histogram}\PY{p}{(}\PY{n}{counts}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+ 
+            
+\prompt{Out}{outcolor}{58}{}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_129_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    \textbf{Whatever state our quantum system is in, there is always a
+measurement that has a deterministic outcome.}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{the-p-gate}{%
+\subsubsection{The P-Gate}\label{the-p-gate}}
+
+    P-gate (phase gate) is parameterised by a rotation around the Z-axis.
+
+\[
+P(\phi) = 
+\begin{bmatrix}
+1 & 0\\
+0 & e^{i\phi}
+\end{bmatrix}
+, \phi \  \mathrm{in} \ \mathbb{R}
+\]
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{59}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{from} \PY{n+nn}{qiskit\PYZus{}textbook}\PY{n+nn}{.}\PY{n+nn}{widgets} \PY{k+kn}{import} \PY{n}{gate\PYZus{}demo}
+\PY{n}{gate\PYZus{}demo}\PY{p}{(}\PY{n}{gates}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{pauli+h+p}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+VBox(children=(HBox(children=(Button(description='X', layout=Layout(height='3em', width='3em'), style=ButtonSt…
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Image(value=b'\textbackslash{}x89PNG\textbackslash{}r\textbackslash{}n\textbackslash{}x1a\textbackslash{}n\textbackslash{}x00\textbackslash{}x00\textbackslash{}x00\textbackslash{}rIHDR\textbackslash{}x00\textbackslash{}x00\textbackslash{}x01 \textbackslash{}x00\textbackslash{}x00\textbackslash{}x01 \textbackslash{}x08\textbackslash{}x06\textbackslash{}x00\textbackslash{}x00\textbackslash{}x00\textbackslash{}x14\textbackslash{}x83\textbackslash{}xae\textbackslash{}x8…
+    \end{Verbatim}
+
+    
+    It is defined in Qiskit as
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{60}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{qc} \PY{o}{=} \PY{n}{QuantumCircuit}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{)}
+\PY{n}{qc}\PY{o}{.}\PY{n}{p}\PY{p}{(}\PY{n}{pi}\PY{o}{/}\PY{l+m+mi}{4}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{qc}\PY{o}{.}\PY{n}{draw}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+ 
+            
+\prompt{Out}{outcolor}{60}{}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_136_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    Notice the Z-gate is a special case of the P-gate, for \(\phi=\pi\).
+There are also 3 other important special cases: the I, S, and T-Gates
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{the-i-s-and-t-gates}{%
+\subsubsection{The I, S, and T-Gates}\label{the-i-s-and-t-gates}}
+
+    \hypertarget{the-i-gate}{%
+\paragraph{The I-Gate}\label{the-i-gate}}
+
+    Identity gate
+
+\[
+I = 
+\begin{bmatrix}
+1 & 0\\
+0 & 1
+\end{bmatrix}
+\]
+
+    The reaspm to consider this a gate (which does not do anything on a
+qubit) is its use in calculations, such as \(I=XX\), etc.
+
+\textbf{Quick exercise}: Which are the eigenstates of the I-gate?
+
+All statevectors should be eigenstates of the I-gate, with eigenvalue
+\(=1\).
+
+    \hypertarget{the-s-gate}{%
+\paragraph{The S-Gate}\label{the-s-gate}}
+
+    \(S\)-gate, also known as \(\sqrt{Z}\)-gate \(\rightarrow \phi=\pi/2\).
+Importantly, \textbf{it is not its own inverse}, i.e., \[SS \neq I\].
+
+\(S^{\dagger}\)-gate, also known as \(\sqrt{Z}^{\dagger}\)-gate
+\(\rightarrow \phi=-\pi/2\)
+
+\[
+SS|q\rangle = Z |q\rangle
+\] the reason for the \(\sqrt{Z}\)-gate.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{61}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{qc} \PY{o}{=} \PY{n}{QuantumCircuit}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{)}
+\PY{n}{qc}\PY{o}{.}\PY{n}{s}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{qc}\PY{o}{.}\PY{n}{sdg}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{qc}\PY{o}{.}\PY{n}{draw}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+ 
+            
+\prompt{Out}{outcolor}{61}{}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_145_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    \hypertarget{the-t-gate}{%
+\paragraph{The T-Gate}\label{the-t-gate}}
+
+    \(T\)-gate, sometimes known as \(\sqrt[4]{Z}\)-gate,
+\(\rightarrow \phi=\pi/4\)
+
+\[
+T = 
+\begin{bmatrix}
+1 & 0\\
+0 & \exp(i\pi/4)
+\end{bmatrix},
+\ \ \ 
+T\dagger = 
+\begin{bmatrix}
+1 & 0\\
+0 & \exp(-i\pi/4)
+\end{bmatrix}
+\]
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{62}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{qc} \PY{o}{=} \PY{n}{QuantumCircuit}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{)}
+\PY{n}{qc}\PY{o}{.}\PY{n}{t}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{qc}\PY{o}{.}\PY{n}{tdg}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{qc}\PY{o}{.}\PY{n}{draw}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+ 
+            
+\prompt{Out}{outcolor}{62}{}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_148_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{63}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{from} \PY{n+nn}{qiskit\PYZus{}textbook}\PY{n+nn}{.}\PY{n+nn}{widgets} \PY{k+kn}{import} \PY{n}{gate\PYZus{}demo}
+\PY{n}{gate\PYZus{}demo}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+VBox(children=(HBox(children=(Button(description='I', layout=Layout(height='3em', width='3em'), style=ButtonSt…
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Image(value=b'\textbackslash{}x89PNG\textbackslash{}r\textbackslash{}n\textbackslash{}x1a\textbackslash{}n\textbackslash{}x00\textbackslash{}x00\textbackslash{}x00\textbackslash{}rIHDR\textbackslash{}x00\textbackslash{}x00\textbackslash{}x01 \textbackslash{}x00\textbackslash{}x00\textbackslash{}x01 \textbackslash{}x08\textbackslash{}x06\textbackslash{}x00\textbackslash{}x00\textbackslash{}x00\textbackslash{}x14\textbackslash{}x83\textbackslash{}xae\textbackslash{}x8…
+    \end{Verbatim}
+
+    
+    \hypertarget{the-general-u-gate}{%
+\subsubsection{The General U-Gate}\label{the-general-u-gate}}
+
+    \(U\)-gate, most general of the single qubit gates can be parameterised
+by 3-parameters:
+
+\[
+U(\theta, \phi, \lambda) =
+\begin{bmatrix}
+\cos(\theta/2) & e^{-i\lambda}\sin(\theta/2)\\
+e^{i\phi}\sin(\theta/2) & e^{i(\phi+\lambda)}\cos(\theta/2)
+\end{bmatrix}
+\]
+
+where the specific cases become
+
+\[
+U(\frac{\pi}{2}, 0, \pi) = \frac{1}{\sqrt{2}}
+\begin{bmatrix}
+1 & 1 \\
+1 & -1
+\end{bmatrix}
+= H,
+\ \ \ \
+U(0, 0, \lambda) = 
+\begin{bmatrix}
+1 & 0 \\
+0 & e^{i\lambda}
+\end{bmatrix}
+= P
+\ \ \ \
+\]
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{64}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{qc} \PY{o}{=} \PY{n}{QuantumCircuit}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{)}
+\PY{n}{qc}\PY{o}{.}\PY{n}{u}\PY{p}{(}\PY{n}{pi}\PY{o}{/}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{,} \PY{n}{pi}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{)}\PY{c+c1}{\PYZsh{}\PYZsh{} 3 parameters and qubit to be applied to}
+\PY{n}{qc}\PY{o}{.}\PY{n}{draw}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+ 
+            
+\prompt{Out}{outcolor}{64}{}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_152_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{65}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{qc}\PY{o}{.}\PY{n}{save\PYZus{}statevector}\PY{p}{(}\PY{p}{)}
+\PY{n}{state} \PY{o}{=} \PY{n}{sim}\PY{o}{.}\PY{n}{run}\PY{p}{(}\PY{n}{qc}\PY{p}{)}\PY{o}{.}\PY{n}{result}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{get\PYZus{}statevector}\PY{p}{(}\PY{p}{)}
+\PY{n}{plot\PYZus{}bloch\PYZus{}multivector}\PY{p}{(}\PY{n}{state}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+ 
+            
+\prompt{Out}{outcolor}{65}{}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_153_0.pdf}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    Qiskit also provides the X equivalent of S gates, SX-gate and SXdg-gate,
+which do a quarter turn around the X-axis.
+
+\textbf{Before running on real IBM quantum hardware, all single qubit
+ops are compiled down to \(I,X, SX\), and \(R_z\), whihc are called
+\emph{physical gates}.}
+
+    \hypertarget{the-case-for-quantum}{%
+\subsection{The Case for Quantum}\label{the-case-for-quantum}}
+
+    \hypertarget{complexity-of-adding}{%
+\subsubsection{Complexity of adding}\label{complexity-of-adding}}
+
+\[n \leq c(n) \leq 2n \longrightarrow c(n) = O(n)\]
+
+\#\#\# Big O notation
+
+For functions \(f(x)\) and \(g(x)\) and parameter \(x\), the statement
+\(f(x) = O(g(x))\) means that \(\exists\) some finite \(M>0\) and
+\(x_0\) such that
+
+\[
+ f(x) \leq Mg(x), \forall x > x_0
+ \]
+
+    Sclaing as functions of the input size \(n\)
+
+    \hypertarget{complexity-theory}{%
+\subsubsection{Complexity Theory}\label{complexity-theory}}
+
+Multiplication: \(O(n^2)\)
+
+Factorization: \(O(e^{n^{1/3}})\)
+
+Searching database:\(O(n)\)
+
+    Formally, defining the complexity of an algorithm depends on the exact
+theoretical model for computation we are using. Each model has a set of
+basic operations, known as primitive operations, with which any
+algorithm can be expressed.
+
+For \textbf{Boolean circuits}, as we considered in the first section,
+the primitive operations are the logic gates.
+
+For \textbf{Turing machines}, a hypothetical form of computer proposed
+by Alan Turing, we imagine a device stepping through and manipulating
+information stored on a tape.
+
+The \textbf{RAM model} has a more complex set of primitive operations
+and acts as an idealized form of the computers we use every day.
+
+All these are models of digital computation, based on discretized
+manipulations of discrete values. Different as they may seem from each
+other, \emph{it turns out that it is very easy for each of them to
+simulate the others}.
+
+\hypertarget{beyond-digital-computers}{%
+\subsubsection{Beyond digital
+computers}\label{beyond-digital-computers}}
+
+\textbf{Digital computers}: discrete values (0-1, e.g.). Can detect and
+correct errors relatively easy.
+
+\textbf{Analog computers}: precise manipulation of continuoulsy varying
+parameters. Issue: arbitrary precision.
+
+Ideally: robusteness of digital with subtle manipulations of analog.
+
+Quantum computing is the only known technology exponentially fatster
+than classical computers for certain tasks.
+
+\hypertarget{when-to-use-qc}{%
+\subsubsection{When to use QC}\label{when-to-use-qc}}
+
+Novel algorithms: One way in which this can be done is when we have some
+function for which we want to determine a global property. For example,
+if we want to find the value of some parameter \(x\) for which some
+function \(f(x)\) is a minimum, or the period of the function if
+\(f(x)\) is periodic.
+
+Superposition of states to induce quantum interference and reveal global
+property.
+
+Ex.
+
+\textbf{Grover's search algorithm}: \(O(n)\) to \(O(n^{1/2})\).
+
+\textbf{Shor's factorization algorithm}: \(O(e^{n^{1/3}})\) to
+\(O(n^3)\)
+
+\textbf{Solve quantum problems}: dimensional need.
+
+Particularly promising are those problems for which classical algorithms
+face inherent scaling limits and which do not require a large classical
+dataset to be loaded.
+
+See
+https://www.cs.virginia.edu/\textasciitilde robins/The\_Limits\_of\_Quantum\_Computers.pdf
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{66}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{qiskit}\PY{n+nn}{.}\PY{n+nn}{tools}\PY{n+nn}{.}\PY{n+nn}{jupyter}
+\PY{o}{\PYZpc{}}\PY{k}{qiskit\PYZus{}version\PYZus{}table}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+/Users/ufranca/opt/anaconda3/lib/python3.8/site-
+packages/qiskit/aqua/\_\_init\_\_.py:86: DeprecationWarning: The package qiskit.aqua
+is deprecated. It was moved/refactored to qiskit-terra For more information see
+<https://github.com/Qiskit/qiskit-aqua/blob/main/README.md\#migration-guide>
+  warn\_package('aqua', 'qiskit-terra')
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+<IPython.core.display.HTML object>
+    \end{Verbatim}
+
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+
+\end{Verbatim}
+\end{tcolorbox}
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+\end{document}
